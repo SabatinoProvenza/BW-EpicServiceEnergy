@@ -36,11 +36,11 @@ public class Cliente {
 	private TipoCliente tipoCliente;
 
 	@OneToOne
-	@JoinColumn(name = "sede_legale_id")
+	@JoinColumn(name = "sedeLegale_id")
 	private Indirizzo sedeLegale;
 
 	@OneToOne
-	@JoinColumn(name = "sede_operativa_id")
+	@JoinColumn(name = "sedeOperativa_id")
 	private Indirizzo sedeOperativa;
 
 	public Cliente(String ragioneSociale, String partitaIva, String email, LocalDate dataInserimento,
