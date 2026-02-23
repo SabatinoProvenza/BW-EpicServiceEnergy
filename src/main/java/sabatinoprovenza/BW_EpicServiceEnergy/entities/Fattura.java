@@ -29,10 +29,9 @@ public class Fattura {
     @Column(unique = true, nullable = false)
     @Setter(AccessLevel.NONE)
     private String numero;
-
-    @Column(nullable = false)
+    
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
+    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
     @ManyToOne
