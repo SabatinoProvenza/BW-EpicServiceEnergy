@@ -4,10 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "province")
@@ -15,8 +13,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Provincia {
     @Id
-    @Setter(AccessLevel.NONE)
-    @Column(nullable = false, length = 2)
+//    @Setter(AccessLevel.NONE)
+    @Column(nullable = false) //length = 2)
     private String sigla;
 
     @Column(nullable = false)
@@ -24,4 +22,10 @@ public class Provincia {
 
     @Column(nullable = false)
     private String regione;
+
+    public Provincia(String sigla, String nome, String regione) {
+        this.sigla = sigla;
+        this.nome = nome;
+        this.regione = regione;
+    }
 }
