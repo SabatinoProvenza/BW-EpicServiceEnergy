@@ -1,0 +1,9 @@
+JSON REGISTER:
+
+{
+    "username": "{{$randomUserName}}",
+    "email": "{{$randomEmail}}",
+    "password": "{{$randomPassword}}",
+    "nome": "{{$randomFirstName}}",
+    "cognome": "{{$randomLastName}}"
+}
