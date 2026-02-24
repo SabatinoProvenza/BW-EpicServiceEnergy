@@ -30,6 +30,10 @@ public class UtenteService {
         return this.utenteRepository.findById(id).orElseThrow(() -> new NotFoundException("L'utente con id: " + id + " non è stato trovato!"));
     }
 
+    public Utente findByUsername(String username) {
+        return this.utenteRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("L'utente con username: " + username + " non è stato trovato!"));
+    }
+
     public Utente registraUtente(RegistraUtenteDTO dto) {
         if (utenteRepository.findByEmail(dto.email()).isPresent()) {
             throw new RuntimeException("Email già in uso!");

@@ -50,7 +50,7 @@ public class AuthController {
 
             throw new ValidationException(errorsList);
         } else {
-            return this.utenteService.saveUtente(utenteDTO);
+            return this.utenteService.registraUtente(utenteDTO);
         }
     }
 
