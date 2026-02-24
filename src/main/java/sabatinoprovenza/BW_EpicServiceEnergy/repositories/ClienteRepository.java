@@ -5,9 +5,10 @@ import org.springframework.stereotype.Repository;
 import sabatinoprovenza.BW_EpicServiceEnergy.entities.Cliente;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface ClienteRepository extends JpaRepository<Cliente, Long> {
+public interface ClienteRepository extends JpaRepository<Cliente, UUID> {
 
     Optional<Cliente> findByEmail(String email);
 

@@ -7,7 +7,7 @@ import sabatinoprovenza.BW_EpicServiceEnergy.entities.Provincia;
 import java.util.Optional;
 
 @Repository
-public interface ProvinciaRepository extends JpaRepository<Provincia, Long> {
+public interface ProvinciaRepository extends JpaRepository<Provincia, String> {
 
     Optional<Provincia> findByNome(String nome);
 
