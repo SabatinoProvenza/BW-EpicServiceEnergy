@@ -62,7 +62,7 @@ public class Cliente {
         this.nomeContatto = nomeContatto;
         this.cognomeContatto = cognomeContatto;
         this.telefonoContatto = telefonoContatto;
-        this.logoAzienda = logoAzienda;
+        this.logoAzienda = "https://ui-avatars.com/api/?name=" + nomeContatto + "+" + cognomeContatto;
         this.tipoCliente = tipoCliente;
     }
 }
