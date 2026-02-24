@@ -6,7 +6,7 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import sabatinoprovenza.BW_EpicServiceEnergy.entities.Cliente;
+import sabatinoprovenza.BW_EpicServiceEnergy.entities.Utente;
 import sabatinoprovenza.BW_EpicServiceEnergy.exceptions.UnauthorizedException;
 
 import java.util.Date;
@@ -17,12 +17,12 @@ public class JWTTools {
     @Value("${JWT_SECRET}")
     private String secret;
 
-    public String generateToken(Cliente cliente) {
+    public String generateToken(Utente utente) {
 
         return Jwts.builder()
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
-                .subject(String.valueOf(cliente.getId()))
+                .subject(String.valueOf(utente.getId()))
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
                 .compact();
     }

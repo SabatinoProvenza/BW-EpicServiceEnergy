@@ -37,6 +37,15 @@ public class Utente implements UserDetails {
     )
     private Set<Ruolo> ruoli = new HashSet<>();
 
+    public Utente(String username, String email, String password, String nome, String cognome) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.nome = nome;
+        this.cognome = cognome;
+        this.avatar = "https://ui-avatars.com/api/?name=" + nome + "+" + cognome;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.ruoli.stream().map(role -> new SimpleGrantedAuthority(role.getNomeRuolo())).toList();
