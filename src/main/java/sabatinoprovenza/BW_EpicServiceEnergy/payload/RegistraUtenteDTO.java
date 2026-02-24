@@ -1,5 +1,6 @@
 package sabatinoprovenza.BW_EpicServiceEnergy.payload;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
@@ -7,6 +8,7 @@ public record RegistraUtenteDTO(
         @NotBlank(message = "L'username è obbligatorio")
         String username,
         @NotBlank
+        @Email
         String email,
         @NotBlank
         @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{4,}$", message = "La password deve contenere una maiuscola, una minuscola ecc ecc ...")
