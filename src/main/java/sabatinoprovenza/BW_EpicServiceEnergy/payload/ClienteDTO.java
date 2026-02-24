@@ -1,6 +1,8 @@
 package sabatinoprovenza.BW_EpicServiceEnergy.payload;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public record ClienteDTO(
         @NotBlank
@@ -9,7 +11,8 @@ public record ClienteDTO(
         String partitaIva,
         @NotBlank
         String email,
-        @NotBlank
+        @NotNull
+        @Positive
         double fatturatoAnnuale,
         @NotBlank
         String pec,
