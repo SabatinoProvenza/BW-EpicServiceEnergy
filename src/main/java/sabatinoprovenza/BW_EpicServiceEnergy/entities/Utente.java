@@ -3,7 +3,11 @@ package sabatinoprovenza.BW_EpicServiceEnergy.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -12,7 +16,7 @@ import java.util.UUID;
 @Table(name = "utenti")
 @Data
 @NoArgsConstructor
-public class Utente {
+public class Utente implements UserDetails {
     @Id
     @GeneratedValue
     private UUID id;
@@ -33,4 +37,8 @@ public class Utente {
     )
     private Set<Ruolo> ruoli = new HashSet<>();
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.ruoli.stream().map(role -> new SimpleGrantedAuthority(role.getNomeRuolo())).toList();
+    }
 }
