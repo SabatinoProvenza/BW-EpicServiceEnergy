@@ -59,6 +59,11 @@ public class UtenteService {
         return utenteRepository.save(u);
     }
 
+    public void deleteUtente(UUID id) {
+        Utente u = this.findById(id);
+        this.utenteRepository.delete(u);
+    }
+
     // 2. FUNZIONE AGGIUNTIVA PER AGGIUNGERE ADMIN
     public void aggiungiRuoloAdmin(UUID utenteId) {
         Utente u = utenteRepository.findById(utenteId)
