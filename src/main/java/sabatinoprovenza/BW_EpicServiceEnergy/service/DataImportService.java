@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 import sabatinoprovenza.BW_EpicServiceEnergy.entities.Comune;
 import sabatinoprovenza.BW_EpicServiceEnergy.entities.Provincia;
 import sabatinoprovenza.BW_EpicServiceEnergy.entities.Ruolo;
+import sabatinoprovenza.BW_EpicServiceEnergy.entities.StatoFattura;
 import sabatinoprovenza.BW_EpicServiceEnergy.repositories.ComuneRepository;
 import sabatinoprovenza.BW_EpicServiceEnergy.repositories.ProvinciaRepository;
 import sabatinoprovenza.BW_EpicServiceEnergy.repositories.RuoloRepository;
+import sabatinoprovenza.BW_EpicServiceEnergy.repositories.StatoFatturaRepository;
 
 import java.io.FileReader;
 import java.util.HashMap;
@@ -25,6 +27,8 @@ public class DataImportService {
     private ComuneRepository comuneRepo;
     @Autowired
     private RuoloRepository ruoloRepository;
+    @Autowired
+    private StatoFatturaRepository statoFatturaRepository;
 
     private String associaProvincia(String nomeProvinciaCsv) {
         if (nomeProvinciaCsv == null) return null;
@@ -70,6 +74,21 @@ public class DataImportService {
         if (comuneRepo.count() > 0) {
             System.out.println("Dati geografici già presenti. Salto l'importazione CSV.");
             return;
+        }
+        if (statoFatturaRepository.count() == 0) {
+            StatoFattura inAttesa = new StatoFattura();
+            inAttesa.setNomeStato("IN ATTESA");
+            statoFatturaRepository.save(inAttesa);
+
+            StatoFattura pagata = new StatoFattura();
+            pagata.setNomeStato("PAGATA");
+            statoFatturaRepository.save(pagata);
+
+            StatoFattura nonPagata = new StatoFattura();
+            nonPagata.setNomeStato("NON PAGATA");
+            statoFatturaRepository.save(nonPagata);
+
+            System.out.println("Stati fattura inizializzati!");
         }
         Map<String, Provincia> provinceMap = new HashMap<>();
 
