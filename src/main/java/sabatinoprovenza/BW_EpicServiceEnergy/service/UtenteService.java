@@ -1,29 +1,37 @@
 package sabatinoprovenza.BW_EpicServiceEnergy.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import sabatinoprovenza.BW_EpicServiceEnergy.entities.Ruolo;
 import sabatinoprovenza.BW_EpicServiceEnergy.entities.Utente;
+import sabatinoprovenza.BW_EpicServiceEnergy.exceptions.NotEmptyException;
 import sabatinoprovenza.BW_EpicServiceEnergy.exceptions.NotFoundException;
 import sabatinoprovenza.BW_EpicServiceEnergy.payload.RegistraUtenteDTO;
 import sabatinoprovenza.BW_EpicServiceEnergy.repositories.RuoloRepository;
 import sabatinoprovenza.BW_EpicServiceEnergy.repositories.UtenteRepository;
 
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 @Service
 public class UtenteService {
     private final UtenteRepository utenteRepository;
+    private final Cloudinary cloudinaryUploader;
     @Autowired
     private RuoloRepository ruoloRepo;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UtenteService(UtenteRepository utenteRepository) {
+    public UtenteService(UtenteRepository utenteRepository, Cloudinary cloudinaryUploader) {
         this.utenteRepository = utenteRepository;
+        this.cloudinaryUploader = cloudinaryUploader;
     }
 
     public Utente findById(UUID id) {
@@ -48,6 +56,8 @@ public class UtenteService {
         u.setEmail(dto.email());
         u.setUsername(dto.username());
         u.setPassword(passwordEncoder.encode(dto.password()));
+        u.setAvatar("https://ui-avatars.com/api/?name="
+                + dto.nome() + "+" + dto.cognome());
 
         // Assegno di base user
         Ruolo userRole = ruoloRepo.findByNomeRuolo("ROLE_USER")
@@ -77,6 +87,44 @@ public class UtenteService {
 
         utenteRepository.save(u);
     }
+
+    // 3. UPLOAD DELL'AVATAR DELL'UTENTE
+
+    public Utente findByIdAndUploadAvatar(UUID utenteId, MultipartFile file) {
+        if (file.isEmpty()) throw new NotEmptyException();
+        Utente found = this.findById(utenteId);
+        try {
+            Map result = cloudinaryUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+
+            String imageUrl = (String) result.get("secure_url");
+
+            found.setAvatar(imageUrl);
+
+            return utenteRepository.save(found);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // 4. FUNZIONE AGGIUNTIVA PER RIMUOVERE RUOLO ADMIN
+    public void resettaRuoliAUser(UUID utenteId) {
+        Utente u = utenteRepository.findById(utenteId)
+                .orElseThrow(() -> new NotFoundException("L'utente con id: " + utenteId + " non è stato trovato!"));
+
+        Ruolo userRole = ruoloRepo.findByNomeRuolo("ROLE_USER")
+                .orElseThrow(() -> new NotFoundException("Errore: Ruolo ROLE_USER non presente nel DB!"));
+
+        // pulisco tutti i ruoli attuali (rimuovo ROLE_ADMIN, ecc.)
+        u.getRuoli().clear();
+
+        // Aggiungo solo il ruolo base
+        u.getRuoli().add(userRole);
+
+        // Salvo l'utente aggiornato
+        utenteRepository.save(u);
+    }
+
 }
 
 

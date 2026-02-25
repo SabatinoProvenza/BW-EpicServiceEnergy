@@ -50,3 +50,32 @@ JSON REGISTRA CLIENTE ( SOLO SEDE LEGALE )
     "capLegale": "20121",
     "nomeComuneLegale": "Milano"
 }
+
+URL PER ORDINAMENTO RICHIESTI:
+
+Nome,GET /clienti?sortBy=ragioneSociale&direction=ASC
+Fatturato annuale,GET /clienti?sortBy=fatturatoAnnuale&direction=DESC
+Data di inserimento,GET /clienti?sortBy=dataInserimento&direction=DESC
+Data ultimo contatto,GET /clienti?sortBy=dataUltimoContatto&direction=DESC
+Provincia sede legale,GET /clienti?sortBy=sedeLegale.comune.provincia.nome&direction=ASC
+
+
+--------------- formato ISO YYYY-MM-DD (es. 2026-02-25).
+Grazie all'annotazione @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)------------------
+
+
+
+URL PER FILTRI RICHIESTI:
+
+Fatturato annuale,GET /clienti?fatturato=50000 (Mostra chi fattura >= 50k)
+Data di inserimento,GET /clienti?inserimento=2024-01-20
+Data ultimo contatto,GET /clienti?ultimoContatto=2024-02-25
+Parte del nome,"GET /clienti?nome=energy (Mostra chi ha ""energy"" nel nome)"
+
+PAGINAZIONE:
+
+Paginazione (Pagina 2, 5 risultati per volta)
+URL: GET http://localhost:8080/api/clienti?page=1&size=5
+
+Mostra i primi 5 clienti (paginazione) ordinati per provincia:
+GET /api/clienti?page=0&size=5&sortBy=sedeLegale.comune.provincia.nome
