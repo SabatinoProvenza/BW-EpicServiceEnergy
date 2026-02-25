@@ -49,6 +49,7 @@ public class ClienteController {
     // PATCH /123/avatar
 
     @PatchMapping("/{clienteId}/logo")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Cliente uploadImage(@RequestParam("profile_picture") MultipartFile file, @PathVariable UUID clienteId) {
 
         return this.clienteService.findByIdAndUpload(clienteId, file);
