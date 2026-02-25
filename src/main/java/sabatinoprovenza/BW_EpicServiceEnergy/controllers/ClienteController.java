@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sabatinoprovenza.BW_EpicServiceEnergy.entities.Cliente;
 import sabatinoprovenza.BW_EpicServiceEnergy.exceptions.ValidationException;
 import sabatinoprovenza.BW_EpicServiceEnergy.payload.ClienteDTO;
@@ -17,11 +18,12 @@ import sabatinoprovenza.BW_EpicServiceEnergy.service.ClienteService;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/clienti")
 public class ClienteController {
-    private ClienteService clienteService;
+    private final ClienteService clienteService;
 
     public ClienteController(ClienteService clienteService) {
         this.clienteService = clienteService;
@@ -42,6 +44,24 @@ public class ClienteController {
             return this.clienteService.salvaCliente(dto);
         }
 
+    }
+
+    // DELETE /clienti/{id} — soft delete (imposta isEnable = false)
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void softDelete(@PathVariable UUID id) {
+        this.clienteService.softDelete(id);
+    }
+
+    // PATCH /clienti/{id}/logo
+
+    @PatchMapping("/{clienteId}/logo")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Cliente uploadImage(@RequestParam("profile_picture") MultipartFile file, @PathVariable UUID clienteId) {
+
+        return this.clienteService.findByIdAndUpload(clienteId, file);
     }
 
     @GetMapping
