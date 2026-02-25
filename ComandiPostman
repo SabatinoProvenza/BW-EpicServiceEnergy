@@ -7,3 +7,46 @@ JSON REGISTER:
     "nome": "{{$randomFirstName}}",
     "cognome": "{{$randomLastName}}"
 }
+
+
+JSON REGISTRA CLIENTE
+{
+   "ragioneSociale": "Epicode Energy Solutions SRL",
+   "partitaIva": "12345678901",
+   "email": "info@epicode-energy.it",
+   "fatturatoAnnuale": 150000.50,
+   "pec": "epicode@legalmail.it",
+   "telefono": "061234567",
+   "emailContatto": "mario.rossi@gmail.com",
+   "nomeContatto": "Mario",
+   "cognomeContatto": "Rossi",
+   "telefonoContatto": "3339876543",
+   "tipoCliente": "SRL",
+   "viaLegale": "Via del Corso",
+   "civicoLegale": "101",
+   "capLegale": "00186",
+   "nomeComuneLegale": "Roma",
+   "viaOperativa": "Via Appia Nuova",
+   "civicoOperativa": "50",
+   "capOperativa": "00178",
+   "nomeComuneOperativa": "Roma"
+}
+
+JSON REGISTRA CLIENTE ( SOLO SEDE LEGALE )
+{
+    "ragioneSociale": "Solo Sede Legale SPA",
+    "partitaIva": "98765432100",
+    "email": "sede.legale@test.it",
+    "fatturatoAnnuale": 500000.00,
+    "pec": "sede@pec.it",
+    "telefono": "02998877",
+    "emailContatto": "luigi.verdi@test.it",
+    "nomeContatto": "Luigi",
+    "cognomeContatto": "Verdi",
+    "telefonoContatto": "3401122334",
+    "tipoCliente": "SPA",
+    "viaLegale": "Piazza Duomo",
+    "civicoLegale": "1",
+    "capLegale": "20121",
+    "nomeComuneLegale": "Milano"
+}

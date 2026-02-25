@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sabatinoprovenza.BW_EpicServiceEnergy.entities.Comune;
 import sabatinoprovenza.BW_EpicServiceEnergy.entities.Provincia;
+import sabatinoprovenza.BW_EpicServiceEnergy.entities.Ruolo;
 import sabatinoprovenza.BW_EpicServiceEnergy.repositories.ComuneRepository;
 import sabatinoprovenza.BW_EpicServiceEnergy.repositories.ProvinciaRepository;
+import sabatinoprovenza.BW_EpicServiceEnergy.repositories.RuoloRepository;
 
 import java.io.FileReader;
 import java.util.HashMap;
@@ -21,6 +23,8 @@ public class DataImportService {
     private ProvinciaRepository provinciaRepo;
     @Autowired
     private ComuneRepository comuneRepo;
+    @Autowired
+    private RuoloRepository ruoloRepository;
 
     private String associaProvincia(String nomeProvinciaCsv) {
         if (nomeProvinciaCsv == null) return null;
@@ -58,6 +62,15 @@ public class DataImportService {
     }
 
     public void importData() throws Exception {
+        if (ruoloRepository.count() == 0) {
+            ruoloRepository.save(new Ruolo(null, "ROLE_USER"));
+            ruoloRepository.save(new Ruolo(null, "ROLE_ADMIN"));
+            System.out.println("Ruoli inizializzati con successo.");
+        }
+        if (comuneRepo.count() > 0) {
+            System.out.println("Dati geografici già presenti. Salto l'importazione CSV.");
+            return;
+        }
         Map<String, Provincia> provinceMap = new HashMap<>();
 
         // 1. CARICAMENTO PROVINCE
