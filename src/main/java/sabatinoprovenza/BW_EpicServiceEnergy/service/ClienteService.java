@@ -191,5 +191,6 @@ public class ClienteService {
 
         // 3. ESECUZIONE: Passo la Specification 'montata' e il Pageable (per paginazione e ordinamento)
         return clienteRepository.findAll(spec, pageable);
+        
     }
 }

@@ -1,5 +1,7 @@
 package sabatinoprovenza.BW_EpicServiceEnergy.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +18,8 @@ import java.util.UUID;
 @Table(name = "utenti")
 @Data
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties({"password", "authorities", "createdEvents", "bookings", "accountNonExpired", "accountNonLocked", "credentialsNonExpired", "enabled"})
 public class Utente implements UserDetails {
     @Id
     @GeneratedValue

@@ -1,5 +1,6 @@
 package sabatinoprovenza.BW_EpicServiceEnergy.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -28,9 +29,15 @@ public class Fattura {
 
     @Column(unique = true, nullable = false)
     private String numero;
-    
+
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
+    @JsonIgnoreProperties({
+            "id", "email", "dataInserimento", "dataUltimoContatto",
+            "fatturatoAnnuale", "emailContatto", "nomeContatto",
+            "cognomeContatto", "telefonoContatto", "logoAzienda",
+            "enable", "sedeLegale", "sedeOperativa"
+    })
     private Cliente cliente;
 
     @ManyToOne

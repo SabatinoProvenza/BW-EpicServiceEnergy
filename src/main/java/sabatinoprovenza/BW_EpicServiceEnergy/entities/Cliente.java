@@ -1,5 +1,7 @@
 package sabatinoprovenza.BW_EpicServiceEnergy.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,6 +14,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties({"password", "authorities", "createdEvents", "bookings", "accountNonExpired", "accountNonLocked", "credentialsNonExpired", "enabled"})
 public class Cliente {
     @Id
     @GeneratedValue

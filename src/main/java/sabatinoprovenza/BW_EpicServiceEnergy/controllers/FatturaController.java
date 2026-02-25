@@ -31,16 +31,18 @@ public class FatturaController {
         this.fatturaService = fatturaService;
     }
 
-    // PATCH /fatture/{id}/stato
-
-    @PatchMapping("/{id}/stato")
+    // PATCH /fatture/{id}/stato/{idStato}
+    //   /fatture/124/stato/5678
+    @PatchMapping("/{id}/stato/{statoFatturaId}") // Modificato qui
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Fattura aggiornaStato(@PathVariable UUID id, @RequestParam UUID statoFatturaId) {
+    public Fattura aggiornaStato(
+            @PathVariable UUID id,
+            @PathVariable UUID statoFatturaId // Cambiato da @RequestParam a @PathVariable
+    ) {
         return this.fatturaService.aggiornaStatoFattura(id, statoFatturaId);
     }
 
     // POST /fatture
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
