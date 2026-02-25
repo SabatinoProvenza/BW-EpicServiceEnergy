@@ -27,7 +27,6 @@ public class Fattura {
     private double importo;
 
     @Column(unique = true, nullable = false)
-    @Setter(AccessLevel.NONE)
     private String numero;
     
     @ManyToOne
