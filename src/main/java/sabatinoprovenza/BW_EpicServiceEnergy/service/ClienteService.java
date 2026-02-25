@@ -87,6 +87,7 @@ public class ClienteService {
         c.setSedeOperativa(sedeOperativa);
 
         return clienteRepository.save(c);
+
     }
 
     // Metodo privato per non ripetere il codice della creazione degli indirizzi
