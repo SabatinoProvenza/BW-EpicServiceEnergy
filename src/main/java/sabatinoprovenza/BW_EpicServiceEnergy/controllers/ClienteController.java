@@ -46,7 +46,16 @@ public class ClienteController {
 
     }
 
-    // PATCH /123/avatar
+    // DELETE /clienti/{id} — soft delete (imposta isEnable = false)
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void softDelete(@PathVariable UUID id) {
+        this.clienteService.softDelete(id);
+    }
+
+    // PATCH /clienti/{id}/logo
 
     @PatchMapping("/{clienteId}/logo")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
