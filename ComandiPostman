@@ -79,3 +79,14 @@ URL: GET http://localhost:8080/api/clienti?page=1&size=5
 
 Mostra i primi 5 clienti (paginazione) ordinati per provincia:
 GET /api/clienti?page=0&size=5&sortBy=sedeLegale.comune.provincia.nome
+
+
+
+URL PER FATTURE:
+
+Filtra per Cliente,GET /fatture?clienteId=UUID-DEL-CLIENTE
+Filtra per Stato,GET /fatture?statoId=UUID-DELLO-STATO
+Filtra per Data,GET /fatture?data=2026-02-25
+Filtra per Anno,GET /fatture?anno=2025
+Range di Importi,GET /fatture?min=100.50&max=5000.00
+Tutto insieme + Ordine,GET /fatture?anno=2025&min=1000&sortBy=importo&direction=ASC
