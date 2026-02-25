@@ -62,7 +62,7 @@ public class ClienteService {
         c.setCognomeContatto(dto.cognomeContatto());
         c.setTelefonoContatto(dto.telefonoContatto());
         c.setTipoCliente(TipoCliente.valueOf(dto.tipoCliente().toUpperCase()));
-
+        c.setLogoAzienda("https://ui-avatars.com/api/?name=" + dto.nomeContatto() + "+" + dto.cognomeContatto());
         c.setDataInserimento(LocalDate.now());
         c.setSedeLegale(sedeLegale);
         c.setSedeOperativa(sedeOperativa);

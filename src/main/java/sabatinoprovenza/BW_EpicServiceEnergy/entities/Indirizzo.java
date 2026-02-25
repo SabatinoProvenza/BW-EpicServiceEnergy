@@ -27,7 +27,7 @@ public class Indirizzo {
     @Column(nullable = false)
     private String cap;
 
-    @Column(nullable = false)
+    @Column
     private String localita;
 
     @ManyToOne

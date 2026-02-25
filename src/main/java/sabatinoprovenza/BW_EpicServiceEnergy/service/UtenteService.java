@@ -56,6 +56,8 @@ public class UtenteService {
         u.setEmail(dto.email());
         u.setUsername(dto.username());
         u.setPassword(passwordEncoder.encode(dto.password()));
+        u.setAvatar("https://ui-avatars.com/api/?name="
+                + dto.nome() + "+" + dto.cognome());
 
         // Assegno di base user
         Ruolo userRole = ruoloRepo.findByNomeRuolo("ROLE_USER")
