@@ -14,6 +14,7 @@ import sabatinoprovenza.BW_EpicServiceEnergy.repositories.ComuneRepository;
 import sabatinoprovenza.BW_EpicServiceEnergy.repositories.IndirizzoRepository;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Service
 public class ClienteService {
@@ -82,5 +83,17 @@ public class ClienteService {
         ind.setComune(com);
 
         return indirizzoRepo.save(ind);
+    }
+
+    public void softDelete(UUID id) {
+        // 1. Cerco il cliente
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Impossibile eliminare: Cliente non trovato!"));
+
+        // 2. Imposto isEnable a false
+        cliente.setEnable(false);
+
+        // 3. Salvo la modifica
+        clienteRepository.save(cliente);
     }
 }
