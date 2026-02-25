@@ -2,6 +2,7 @@ package sabatinoprovenza.BW_EpicServiceEnergy.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,8 @@ public class ClienteService {
     private IndirizzoRepository indirizzoRepo;
     @Autowired
     private Cloudinary cloudinaryUploader;
+    @Autowired
+    private MailgunService mailgunService;
 
     @Autowired
     private ComuneRepository comuneRepo;
@@ -86,8 +89,26 @@ public class ClienteService {
         c.setSedeLegale(sedeLegale);
         c.setSedeOperativa(sedeOperativa);
 
-        return clienteRepository.save(c);
+        Cliente newCliente = clienteRepository.save(c);
 
+        this.generaEmail(newCliente.getEmail());
+
+        return newCliente;
+        
+    }
+
+    private void generaEmail(String email) {
+
+        String subject = "Registrazione a EpicEnergyService avvenuta con successo!";
+        String body = "Benvenuto in EpicEnergyService, per ulteriori informazioni sulle nostre offerte non esitare a contattarci!";
+
+        try {
+            mailgunService.sendSimpleMessage(email, subject, body);
+            System.out.println("Email inviata con successo a " + email);
+        } catch (UnirestException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
     }
 
     // Metodo privato per non ripetere il codice della creazione degli indirizzi
