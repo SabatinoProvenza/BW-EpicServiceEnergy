@@ -8,6 +8,7 @@ import sabatinoprovenza.BW_EpicServiceEnergy.entities.StatoFattura;
 import sabatinoprovenza.BW_EpicServiceEnergy.exceptions.NotFoundException;
 import sabatinoprovenza.BW_EpicServiceEnergy.payload.FatturaDTO;
 import sabatinoprovenza.BW_EpicServiceEnergy.repositories.ClienteRepository;
+import java.util.UUID;
 import sabatinoprovenza.BW_EpicServiceEnergy.repositories.FatturaRepository;
 import sabatinoprovenza.BW_EpicServiceEnergy.repositories.StatoFatturaRepository;
 
@@ -20,6 +21,15 @@ public class FatturaService {
 	private ClienteRepository clienteRepository;
 	@Autowired
 	private StatoFatturaRepository statoFatturaRepository;
+
+	public Fattura aggiornaStatoFattura(UUID fatturaId, UUID statoFatturaId) {
+		Fattura f = fatturaRepository.findById(fatturaId)
+				.orElseThrow(() -> new NotFoundException("Fattura con id " + fatturaId + " non trovata!"));
+		StatoFattura stato = statoFatturaRepository.findById(statoFatturaId)
+				.orElseThrow(() -> new NotFoundException("Stato fattura con id " + statoFatturaId + " non trovato!"));
+		f.setStatoFattura(stato);
+		return fatturaRepository.save(f);
+	}
 
 	public Fattura salvaFattura(FatturaDTO dto) {
 		Cliente cliente = clienteRepository.findById(dto.clienteId())
@@ -35,6 +45,10 @@ public class FatturaService {
 			StatoFattura stato = statoFatturaRepository.findById(dto.statoFatturaId())
 					.orElseThrow(() -> new NotFoundException("Stato fattura con id " + dto.statoFatturaId() + " non trovato!"));
 			f.setStatoFattura(stato);
+		} else {
+			StatoFattura inAttesa = statoFatturaRepository.findByNomeStato("IN ATTESA")
+					.orElseThrow(() -> new NotFoundException("Stato 'IN ATTESA' non trovato nel DB!"));
+			f.setStatoFattura(inAttesa);
 		}
 
 		return fatturaRepository.save(f);
