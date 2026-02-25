@@ -1,6 +1,9 @@
 package sabatinoprovenza.BW_EpicServiceEnergy.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import sabatinoprovenza.BW_EpicServiceEnergy.entities.Cliente;
 import sabatinoprovenza.BW_EpicServiceEnergy.entities.Comune;
@@ -14,6 +17,7 @@ import sabatinoprovenza.BW_EpicServiceEnergy.repositories.ComuneRepository;
 import sabatinoprovenza.BW_EpicServiceEnergy.repositories.IndirizzoRepository;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Service
 public class ClienteService {
@@ -82,5 +86,75 @@ public class ClienteService {
         ind.setComune(com);
 
         return indirizzoRepo.save(ind);
+    }
+
+    public void softDelete(UUID id) {
+        // 1. Cerco il cliente
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Impossibile eliminare: Cliente non trovato!"));
+
+        // 2. Imposto isEnable a false
+        cliente.setEnable(false);
+
+        // 3. Salvo la modifica
+        clienteRepository.save(cliente);
+    }
+
+
+    // Metodo particolare per ricerca dinamica, utilizza le JPA Specifications per costruire
+    // una query SQL su misura in base ai parametri che arrivano (o non arrivano) dal frontend/Postman.
+    public Page<Cliente> ricercaAvanzataClienti(
+            Double fatturato,
+            LocalDate dataInserimento,
+            LocalDate dataUltimoContatto,
+            String parteDelNome,
+            Pageable pageable) {
+
+        // 1. SPECIFICATION.WHERE: Inizializza il contenitore della query.
+        // Si usa una Lambda Expression (root, query, cb).
+        // root  -> Rappresenta l'entità 'Cliente' (da quale tabella pesco i dati)
+        // query -> Rappresenta la struttura della query (ordinamenti, raggruppamenti - qui usata implicitamente)
+        // cb    -> CriteriaBuilder: la "fabbrica" di operatori logici (uguale, maggiore, like, ecc.)
+        Specification<Cliente> spec = Specification.where((root, query, cb) ->
+                // Parto con una condizione base sempre vera per i nostri scopi: isEnable deve essere true
+                cb.equal(root.get("isEnable"), true)
+        );
+
+        // 2. AND DINAMICI: Per ogni parametro, controllo se è nullo.
+        // Se l'utente non ha passato il filtro su Postman, semplicemente non aggiungo il mattoncino alla query.
+
+        if (fatturato != null) {
+            // .and() concatena una nuova condizione alla precedente usando la logica SQL 'AND'
+            spec = spec.and((root, query, cb) ->
+                    // cb.greaterThanOrEqualTo trasforma il codice in SQL: "WHERE fatturato_annuale >= ?"
+                    cb.greaterThanOrEqualTo(root.get("fatturatoAnnuale"), fatturato)
+            );
+        }
+
+        if (dataInserimento != null) {
+            spec = spec.and((root, query, cb) ->
+                    // root.get("campo") serve per puntare esattamente al nome della variabile nell'Entity Java
+                    cb.equal(root.get("dataInserimento"), dataInserimento)
+            );
+        }
+
+        if (dataUltimoContatto != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("dataUltimoContatto"), dataUltimoContatto)
+            );
+        }
+
+        if (parteDelNome != null) {
+            spec = spec.and((root, query, cb) ->
+                    // Gestisco il "Case Insensitive":
+                    // cb.lower(root.get(...)) trasforma il dato nel DB in minuscolo
+                    // .toLowerCase() trasforma la stringa cercata in minuscolo
+                    // cb.like gestisce la ricerca parziale: "%" + valore + "%" significa "contiene"
+                    cb.like(cb.lower(root.get("ragioneSociale")), "%" + parteDelNome.toLowerCase() + "%")
+            );
+        }
+
+        // 3. ESECUZIONE: Passo la Specification 'montata' e il Pageable (per paginazione e ordinamento)
+        return clienteRepository.findAll(spec, pageable);
     }
 }
