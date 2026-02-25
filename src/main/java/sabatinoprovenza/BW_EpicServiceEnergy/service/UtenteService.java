@@ -107,6 +107,24 @@ public class UtenteService {
         }
     }
 
+    // 4. FUNZIONE AGGIUNTIVA PER RIMUOVERE RUOLO ADMIN
+    public void resettaRuoliAUser(UUID utenteId) {
+        Utente u = utenteRepository.findById(utenteId)
+                .orElseThrow(() -> new NotFoundException("L'utente con id: " + utenteId + " non è stato trovato!"));
+
+        Ruolo userRole = ruoloRepo.findByNomeRuolo("ROLE_USER")
+                .orElseThrow(() -> new NotFoundException("Errore: Ruolo ROLE_USER non presente nel DB!"));
+
+        // pulisco tutti i ruoli attuali (rimuovo ROLE_ADMIN, ecc.)
+        u.getRuoli().clear();
+
+        // Aggiungo solo il ruolo base
+        u.getRuoli().add(userRole);
+
+        // Salvo l'utente aggiornato
+        utenteRepository.save(u);
+    }
+
 }
 
 
