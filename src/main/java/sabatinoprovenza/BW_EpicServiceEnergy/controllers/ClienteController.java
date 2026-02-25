@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sabatinoprovenza.BW_EpicServiceEnergy.entities.Cliente;
 import sabatinoprovenza.BW_EpicServiceEnergy.exceptions.ValidationException;
 import sabatinoprovenza.BW_EpicServiceEnergy.payload.ClienteDTO;
@@ -17,11 +18,12 @@ import sabatinoprovenza.BW_EpicServiceEnergy.service.ClienteService;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/clienti")
 public class ClienteController {
-    private ClienteService clienteService;
+    private final ClienteService clienteService;
 
     public ClienteController(ClienteService clienteService) {
         this.clienteService = clienteService;
@@ -42,6 +44,14 @@ public class ClienteController {
             return this.clienteService.salvaCliente(dto);
         }
 
+    }
+
+    // PATCH /123/avatar
+
+    @PatchMapping("/{clienteId}/logo")
+    public Cliente uploadImage(@RequestParam("profile_picture") MultipartFile file, @PathVariable UUID clienteId) {
+
+        return this.clienteService.findByIdAndUpload(clienteId, file);
     }
 
     @GetMapping
