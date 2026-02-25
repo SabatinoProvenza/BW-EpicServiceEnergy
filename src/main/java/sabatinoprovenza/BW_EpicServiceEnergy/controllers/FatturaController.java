@@ -12,6 +12,7 @@ import sabatinoprovenza.BW_EpicServiceEnergy.payload.FatturaDTO;
 import sabatinoprovenza.BW_EpicServiceEnergy.service.FatturaService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/fatture")
@@ -23,6 +24,16 @@ public class FatturaController {
 	public FatturaController(FatturaService fatturaService) {
 		this.fatturaService = fatturaService;
 	}
+
+	// PATCH /fatture/{id}/stato
+
+	@PatchMapping("/{id}/stato")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public Fattura aggiornaStato(@PathVariable UUID id, @RequestParam UUID statoFatturaId) {
+		return this.fatturaService.aggiornaStatoFattura(id, statoFatturaId);
+	}
+
+	// POST /fatture
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
