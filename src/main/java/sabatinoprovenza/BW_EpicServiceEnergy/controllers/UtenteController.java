@@ -30,7 +30,25 @@ public class UtenteController {
         this.utenteService.deleteUtente(id);
     }
 
-    // 2. PATCH /123/avatar
+    // 2. PATCH /utenti/{id}/ruolo — resetta i ruoli a USER
+
+    @PatchMapping("/{id}/ruolo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void resettaRuolo(@PathVariable UUID id) {
+        this.utenteService.resettaRuoliAUser(id);
+    }
+
+    // 3. PATCH /utenti/{id}/ruolo/admin — promuove utente ad ADMIN
+
+    @PatchMapping("/{id}/ruolo/admin")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void aggiungiAdmin(@PathVariable UUID id) {
+        this.utenteService.aggiungiRuoloAdmin(id);
+    }
+
+    // 4. PATCH /utenti/{id}/avatar
 
     @PatchMapping("/{utenteId}/avatar")
     public Utente uploadImage(@RequestParam("profile_picture") MultipartFile file, @PathVariable UUID utenteId) {

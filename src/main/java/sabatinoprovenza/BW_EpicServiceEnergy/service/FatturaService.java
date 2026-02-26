@@ -69,8 +69,7 @@ public class FatturaService {
             Pageable pageable) {
 
         // 1. Inizializzo la Specification (senza condizioni base obbligatorie in questo caso)
-        Specification<Fattura> spec;
-        spec = Specification.where((Specification<Fattura>) null);
+        Specification<Fattura> spec = Specification.where((root, query, cb) -> cb.conjunction());
 
         // 2. FILTRO PER CLIENTE (Uso l'ID del cliente)
         if (clienteId != null) {
@@ -96,8 +95,10 @@ public class FatturaService {
         // 5. FILTRO PER ANNO
         // Uso cb.function per chiamare la funzione SQL "year" sulla colonna "data"
         if (anno != null) {
+            LocalDate inizioAnno = LocalDate.of(anno, 1, 1);
+            LocalDate fineAnno = LocalDate.of(anno, 12, 31);
             spec = spec.and((root, query, cb) ->
-                    cb.equal(cb.function("year", Integer.class, root.get("data")), anno)
+                    cb.between(root.get("data"), inizioAnno, fineAnno)
             );
         }
 

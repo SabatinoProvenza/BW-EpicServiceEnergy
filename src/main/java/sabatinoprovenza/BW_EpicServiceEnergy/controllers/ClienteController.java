@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sabatinoprovenza.BW_EpicServiceEnergy.entities.Cliente;
 import sabatinoprovenza.BW_EpicServiceEnergy.exceptions.ValidationException;
 import sabatinoprovenza.BW_EpicServiceEnergy.payload.ClienteDTO;
+import sabatinoprovenza.BW_EpicServiceEnergy.payload.PageResponse;
 import sabatinoprovenza.BW_EpicServiceEnergy.service.ClienteService;
 
 import java.time.LocalDate;
@@ -46,7 +47,16 @@ public class ClienteController {
 
     }
 
-    // PATCH /123/avatar
+    // DELETE /clienti/{id} — soft delete (imposta isEnable = false)
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void softDelete(@PathVariable UUID id) {
+        this.clienteService.softDelete(id);
+    }
+
+    // PATCH /clienti/{id}/logo
 
     @PatchMapping("/{clienteId}/logo")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -56,7 +66,7 @@ public class ClienteController {
     }
 
     @GetMapping
-    public Page<Cliente> getClienti(
+    public PageResponse<Cliente> getClienti(
             // Parametri per i FILTRI (tutti opzionali)
             @RequestParam(required = false) Double fatturato,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inserimento,
@@ -74,6 +84,16 @@ public class ClienteController {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         // Chiamiamo il tuo metodo "ganzo" nel Service
-        return clienteService.ricercaAvanzataClienti(fatturato, inserimento, ultimoContatto, nome, pageable);
+        Page<Cliente> result = clienteService.ricercaAvanzataClienti(
+                fatturato, inserimento, ultimoContatto, nome, pageable
+        );
+
+        return new PageResponse<>(
+                result.getContent(),
+                result.getNumber(),
+                result.getSize(),
+                result.getTotalElements(),
+                result.getTotalPages()
+        );
     }
 }
