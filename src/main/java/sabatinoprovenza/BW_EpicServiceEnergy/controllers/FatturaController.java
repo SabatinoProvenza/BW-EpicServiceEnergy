@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import sabatinoprovenza.BW_EpicServiceEnergy.entities.Fattura;
 import sabatinoprovenza.BW_EpicServiceEnergy.exceptions.ValidationException;
 import sabatinoprovenza.BW_EpicServiceEnergy.payload.FatturaDTO;
+import sabatinoprovenza.BW_EpicServiceEnergy.payload.PageResponse;
 import sabatinoprovenza.BW_EpicServiceEnergy.service.FatturaService;
 
 import java.time.LocalDate;
@@ -31,16 +32,18 @@ public class FatturaController {
         this.fatturaService = fatturaService;
     }
 
-    // PATCH /fatture/{id}/stato
-
-    @PatchMapping("/{id}/stato")
+    // PATCH /fatture/{id}/stato/{idStato}
+    //   /fatture/124/stato/5678
+    @PatchMapping("/{id}/stato/{statoFatturaId}") // Modificato qui
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Fattura aggiornaStato(@PathVariable UUID id, @RequestParam UUID statoFatturaId) {
+    public Fattura aggiornaStato(
+            @PathVariable UUID id,
+            @PathVariable UUID statoFatturaId // Cambiato da @RequestParam a @PathVariable
+    ) {
         return this.fatturaService.aggiornaStatoFattura(id, statoFatturaId);
     }
 
     // POST /fatture
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -57,7 +60,7 @@ public class FatturaController {
 
 
     @GetMapping
-    public Page<Fattura> getFatture(
+    public PageResponse<Fattura> getFatture(
             @RequestParam(required = false) UUID clienteId,
             @RequestParam(required = false) UUID statoId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,
@@ -72,7 +75,14 @@ public class FatturaController {
         Sort sort = direction.equalsIgnoreCase("ASC") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        return fatturaService.ricercaAvanzataFatture(clienteId, statoId, data, anno, min, max, pageable);
+        Page<Fattura> result = fatturaService.ricercaAvanzataFatture(clienteId, statoId, data, anno, min, max, pageable);
+        return new PageResponse<>(
+                result.getContent(),
+                result.getNumber(),
+                result.getSize(),
+                result.getTotalElements(),
+                result.getTotalPages()
+        );
     }
 }
 
