@@ -27,9 +27,6 @@ public class MailgunService {
                 .field("subject", subject)// -> oggetto dell’email
                 .field("text", text)// -> corpo dell’email
                 .asString();
-
-        System.out.println("Status: " + response.getStatus());
-        System.out.println("Body: " + response.getBody());
     }
 
 }
