@@ -1,6 +1,7 @@
 package sabatinoprovenza.BW_EpicServiceEnergy.exceptions;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -24,11 +25,11 @@ public class ErrorsHandler {
         return new ErrorsPayload(ex.getMessage(), LocalDateTime.now());
     }
 
-//    @ExceptionHandler(AuthorizationDeniedException.class)
-//    @ResponseStatus(HttpStatus.FORBIDDEN) // 403
-//    public ErrorsPayload handleForbidden(AuthorizationDeniedException ex) {
-//        return new ErrorsPayload("! ! ! ACCESSO NEGATO ! ! ! Non sei fornito dei permessi necessari per accedere!", LocalDateTime.now());
-//    }
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN) // 403
+    public ErrorsPayload handleForbidden(AuthorizationDeniedException ex) {
+        return new ErrorsPayload("! ! ! ACCESSO NEGATO ! ! ! Non sei fornito dei permessi necessari per accedere!", LocalDateTime.now());
+    }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500
